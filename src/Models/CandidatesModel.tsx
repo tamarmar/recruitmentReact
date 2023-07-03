@@ -9,5 +9,8 @@ export interface ICandidate {
     cognitiveTest?:boolean;
     personalityTest?:boolean;
     ReliabilityTest?:boolean;
+    interview?:boolean;
+    task?:boolean;
+    screeningCall?:boolean;
     [key: string]: any;
   }

@@ -1,5 +1,4 @@
 import { Dialog } from '@mui/material';
-import { Console } from 'console';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FcAddImage } from 'react-icons/fc';
@@ -14,7 +13,7 @@ interface FormData {
   JobDesc: string;
   demands:string;
   status:boolean;
-  date:Date;
+  date:string;
   logo?:string;
 }
 var idCardBase64:string;
@@ -27,23 +26,16 @@ interface Props{
 
 export default function Add({type,  open,onClose}:Props) {
   const { handleSubmit, register, formState: { errors } } = useForm<FormData>();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-
-
   const func = () => {
     document.getElementById('image-upload')?.click()
   }
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
-
     if (file) {
-      setSelectedImage(file);
       getBase64(file, (result) => {
         idCardBase64 =result as string;
-        console.log(idCardBase64)
    });
     }
-    
   };
   const getBase64 = (file: File, cb: (result: string | ArrayBuffer | null) => void) => {
     let reader = new FileReader();
@@ -61,7 +53,8 @@ const onSubmit = (formData: FormData) => {
         formData.place="---"
     if(formData.CompanyDesc=="")
         formData.CompanyDesc="---"
-    formData.date=new Date();
+    const date=(new Date()).toISOString()
+    formData.date=date.slice(0, 10);
     formData.status=true;
     if(idCardBase64!="")
         formData.logo=idCardBase64
@@ -75,7 +68,7 @@ const onSubmit = (formData: FormData) => {
       <Dialog open={open} onClose={()=>onClose()}>
       <div className="addjob">
           <h1>Add job</h1>
-        <ButtonG component={FcAddImage} nav="" func={func}><div>Add company logo</div><input
+        <ButtonG component={FcAddImage} nav="addJob" func={func}><div>Add company logo</div><input
         id="image-upload"
         type="file"
         accept="image/*"

@@ -8,17 +8,15 @@ import { ICandidate } from '../Models/CandidatesModel';
 import { IJob } from '../Models/JobsModel';
 
 interface Props{
-    val:number;
-    cId:string;
     data:ICandidate | IJob;
 }
 
-export default function RatingC({val,cId,data}:Props) {
-  const [value, setValue] = React.useState<number | null>(val);
+export default function RatingC({data}:Props) {
+  const [value, setValue] = React.useState<number | null>(data.rating);
   function handleChange(newValue:number | null) {
       if(newValue!=null)
         data.rating=newValue;
-      updateCandidates(cId,data)
+      updateCandidates(data._id,data)
   }
 
   return (

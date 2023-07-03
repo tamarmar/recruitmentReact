@@ -51,14 +51,33 @@ interface Props{
   name:string;
 }
 export default function GTable({data,arr,name}:Props) {
-  const JobDesc:string=""
-  function handleChangeCheckBox(dta:ICandidate|IJob){
-    dta.ReliabilityTest=!dta.ReliabilityTest;
+  function handleChange(dta:ICandidate|IJob,a:string){
+    switch(a){
+      case "ReliabilityTest":
+        dta.ReliabilityTest=!dta.ReliabilityTest;
+        break;
+      case "cognitiveTest":
+        dta.cognitiveTest=!dta.cognitiveTest;
+        break;
+      case "personalityTest":
+        dta.personalityTest=!dta.personalityTest;
+        break;
+      case "interview":
+        dta.interview=!dta.interview;
+        break;
+      case "screeningCall":
+        dta.screeningCall=!dta.screeningCall;
+        break;
+      case "task":
+        dta.task=!dta.task;
+        break;
+    }
     updateCandidates(dta._id,dta)
   }
   
   return (
-    <div className="table">
+    <div>
+    {data && <div className="table">
     {data.length==0 && <div>You need to insert data if you want to see something</div>}
     {data.length>0 &&<TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -73,18 +92,15 @@ export default function GTable({data,arr,name}:Props) {
         <TableBody>
           {data.map((d) => (
               
-            <StyledTableRow key={d.name}> 
+            <StyledTableRow key={d._id}> 
             
             {arr?.map((a:string)=>{
               
            if(name==="job" && a==="name")  { return <StyledTableCell align="left" component="th" scope="row"><Link to={`/candidatesdashboard/${d._id}`}>{d[a]}</Link></StyledTableCell>}
-           else if(a==="rating"){return <StyledTableCell align="left" component="th" scope="row"><RatingC val={d[a]} cId={d._id} data={d}></RatingC></StyledTableCell>}
-           else if(a==="logo" &&d[a]!=null){return <img src={d[a]} id="logo" width="60px" height="60px"></img>}
-           else if(a==="logo" ){return <MdQuestionMark></MdQuestionMark>}
-           else if((a==="cognitiveTest"||a==="personalityTest") &&d[a] ){return <StyledTableCell align="left" component="th" scope="row"><GiCheckMark ></GiCheckMark></StyledTableCell>}
-           else if((a==="cognitiveTest"||a==="personalityTest") &&!d[a] ){return <StyledTableCell align="left" component="th" scope="row"><GiCrossMark ></GiCrossMark></StyledTableCell>}
-           else if(a==="ReliabilityTest" &&!d[a]){return <StyledTableCell align="left" component="th" scope="row"><Checkbox {...label} onChange={()=>handleChangeCheckBox(d)}/></StyledTableCell>}
-           else if(a==="ReliabilityTest" &&d[a]){return <StyledTableCell align="left" component="th" scope="row"><Checkbox {...label} defaultChecked onChange={()=>handleChangeCheckBox(d)}/></StyledTableCell>}
+           else if(a==="rating"){return <StyledTableCell align="left" component="th" scope="row"><RatingC data={d}></RatingC></StyledTableCell>}
+           else if(a==="logo"){return (d[a]!=null)?<img src={d[a]} id="logo" width="60px" height="60px"/>:<MdQuestionMark></MdQuestionMark>}
+           else if((a==="cognitiveTest"||a==="personalityTest"||a==="interview"||a==="screeningCall"||a==="task")){return <StyledTableCell align="left" component="th" defaultChecked={true} scope="row" onClick={()=>handleChange(d,a)}>{d[a]?<GiCheckMark></GiCheckMark>:<GiCrossMark ></GiCrossMark>}</StyledTableCell>}
+           else if(a==="ReliabilityTest"){return <StyledTableCell align="left" component="th" scope="row">{d[a]?<Checkbox {...label} defaultChecked onChange={()=>handleChange(d,a)}/>:<Checkbox {...label} onChange={()=>handleChange(d,a)}/>}</StyledTableCell>}
             else {return <StyledTableCell align="left" component="th" scope="row">{''+d[a]}</StyledTableCell>}
             })}
             </StyledTableRow>
@@ -93,6 +109,7 @@ export default function GTable({data,arr,name}:Props) {
         </TableBody>
       </Table>
     </TableContainer>}
+    </div>}
     </div>
   );
 }
